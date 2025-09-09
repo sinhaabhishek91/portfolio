@@ -1,0 +1,608 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    :root {
+        --cyber-blue: #0066cc;
+        --cyber-green: #00ff41;
+        --cyber-purple: #6e00ff;
+        --cyber-pink: #ff00a0;
+        --terminal-bg: #0a0e12;
+        --terminal-text: #00ff41;
+        --matrix-green: rgba(0, 255, 65, 0.7);
+    }
+    
+    .hero {
+        background: linear-gradient(135deg, #000000, #0a0e12);
+        color: white;
+        padding: 8rem 0 6rem;
+        position: relative;
+        overflow: hidden;
+        border-bottom: 1px solid var(--cyber-green);
+    }
+    
+    .hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: 
+            radial-gradient(circle at 20% 30%, rgba(0, 255, 65, 0.05) 0%, transparent 30%),
+            radial-gradient(circle at 80% 70%, rgba(0, 102, 204, 0.05) 0%, transparent 30%);
+        z-index: 0;
+    }
+    
+    .matrix-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: 0;
+        opacity: 0.15;
+    }
+    
+    .matrix-column {
+        position: relative;
+        float: left;
+        width: 2ch;
+        font-family: 'Courier New', monospace;
+        color: var(--cyber-green);
+        font-size: 1.2rem;
+        writing-mode: vertical-rl;
+        text-orientation: mixed;
+        animation: matrix-fall linear infinite;
+    }
+    
+    @keyframes matrix-fall {
+        0% { transform: translateY(-100%); }
+        100% { transform: translateY(100vh); }
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        animation: fadeIn 1s ease-out;
+    }
+    
+    .hero h1 {
+        font-size: 3.5rem;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(to right, var(--cyber-green), var(--cyber-blue));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+        letter-spacing: 1px;
+    }
+    
+    .hero h2 {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        color: var(--cyber-green);
+        font-weight: 400;
+        text-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+    }
+    
+    .hero p {
+        font-size: 1.2rem;
+        max-width: 700px;
+        margin: 0 auto 2rem;
+        line-height: 1.6;
+        color: #c0c0c0;
+    }
+    
+    .btn {
+        display: inline-block;
+        padding: 0.8rem 2rem;
+        background: linear-gradient(135deg, var(--cyber-green), var(--cyber-blue));
+        color: #000 !important;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 15px rgba(0, 255, 65, 0.4);
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+        letter-spacing: 0.5px;
+    }
+    
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, var(--cyber-blue), var(--cyber-green));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: -1;
+    }
+    
+    .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0 25px rgba(0, 255, 65, 0.6);
+    }
+    
+    .btn:hover::before {
+        opacity: 1;
+    }
+    
+    .btn-outline {
+        background: transparent;
+        color: var(--cyber-green) !important;
+        border: 2px solid var(--cyber-green);
+        box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+    }
+    
+    .btn-outline:hover {
+        background: rgba(0, 255, 65, 0.1);
+    }
+    
+    .section {
+        padding: 6rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .section-title {
+        text-align: center;
+        margin-bottom: 3rem;
+        font-size: 2.5rem;
+        color: var(--cyber-green);
+        position: relative;
+        letter-spacing: 1px;
+    }
+    
+    .section-title::after {
+        content: '';
+        position: absolute;
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(to right, var(--cyber-green), var(--cyber-blue));
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 2px;
+        box-shadow: 0 0 10px var(--cyber-green);
+    }
+    
+    .terminal {
+        background: var(--terminal-bg);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 2rem auto;
+        max-width: 800px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--cyber-green);
+    }
+    
+    .terminal::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            135deg,
+            rgba(0, 255, 65, 0.03) 0%,
+            rgba(0, 255, 65, 0) 20%,
+            rgba(0, 255, 65, 0) 80%,
+            rgba(0, 255, 65, 0.03) 100%
+        );
+        pointer-events: none;
+    }
+    
+    .terminal-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .terminal-btn {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: 6px;
+    }
+    
+    .terminal-btn.red { background: #ff5f56; }
+    .terminal-btn.yellow { background: #ffbd2e; }
+    .terminal-btn.green { background: #27c93f; }
+    
+    .terminal-title {
+        color: #b3b3b3;
+        font-size: 0.9rem;
+        margin-left: 1rem;
+        font-family: 'Courier New', monospace;
+    }
+    
+    .terminal-body {
+        font-family: 'Courier New', monospace;
+        color: var(--terminal-text);
+        line-height: 1.6;
+    }
+    
+    .terminal-prompt {
+        color: var(--cyber-green);
+    }
+    
+    .terminal-command {
+        color: white;
+    }
+    
+    .terminal-output {
+        margin-top: 0.5rem;
+        opacity: 0;
+        animation: fadeIn 0.5s forwards;
+        animation-delay: 0.3s;
+    }
+    
+    .terminal-cursor {
+        display: inline-block;
+        width: 10px;
+        height: 1.2rem;
+        background-color: var(--cyber-green);
+        margin-left: 5px;
+        animation: blink 1s infinite;
+        vertical-align: middle;
+    }
+    
+    .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+    
+    .skill-card {
+        background: rgba(10, 14, 18, 0.8);
+        border: 1px solid rgba(0, 255, 65, 0.3);
+        border-radius: 8px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .skill-card::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        z-index: -1;
+        background: linear-gradient(45deg, var(--cyber-green), var(--cyber-blue), var(--cyber-purple));
+        background-size: 400%;
+        border-radius: 10px;
+        opacity: 0;
+        transition: 0.5s;
+    }
+    
+    .skill-card:hover::before {
+        opacity: 1;
+        animation: animate-border 3s linear infinite;
+    }
+    
+    .skill-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 255, 65, 0.2);
+        border-color: transparent;
+    }
+    
+    .skill-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: var(--cyber-green);
+        transition: all 0.3s ease;
+    }
+    
+    .skill-card:hover .skill-icon {
+        transform: scale(1.1);
+    }
+    
+    .skill-card h3 {
+        color: white;
+        margin-bottom: 0.5rem;
+    }
+    
+    .skill-card p {
+        color: #b3b3b3;
+        font-size: 0.9rem;
+    }
+    
+    .cyber-pulse {
+        position: relative;
+    }
+    
+    .cyber-pulse::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        box-shadow: 0 0 20px var(--cyber-green);
+        opacity: 0;
+        animation: pulse 2s infinite;
+        border-radius: inherit;
+    }
+    
+    @keyframes pulse {
+        0% { opacity: 0; }
+        50% { opacity: 0.5; }
+        100% { opacity: 0; }
+    }
+    
+    @keyframes animate-border {
+        0% { background-position: 0 0; }
+        50% { background-position: 400% 0; }
+        100% { background-position: 0 0; }
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+    }
+    
+    @media (max-width: 768px) {
+        .hero h1 {
+            font-size: 2.5rem;
+        }
+        
+        .hero h2 {
+            font-size: 1.5rem;
+        }
+        
+        .skills-grid {
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        }
+    }
+</style>
+
+<section class="hero">
+    <div class="matrix-bg" id="matrixBackground"></div>
+    <div class="container">
+        <div class="hero-content">
+            <h1>Abhishek Kumar Sinha</h1>
+            <h2>Cybersecurity Specialist | Ethical Hacker</h2>
+            <p>Securing digital infrastructures through advanced penetration testing, vulnerability assessment, and robust defense strategies.</p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('projects') }}" class="btn cyber-pulse">View My Projects</a>
+                <a href="#contact" class="btn btn-outline" style="margin-left: 1rem;">Contact Me</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">About Me</h2>
+        <div class="terminal">
+            <div class="terminal-header">
+                <div class="terminal-btn red"></div>
+                <div class="terminal-btn yellow"></div>
+                <div class="terminal-btn green"></div>
+                <div class="terminal-title">root@kali: ~/profile</div>
+            </div>
+            <div class="terminal-body">
+                <div><span class="terminal-prompt">$</span> <span class="terminal-command">whoami</span></div>
+                <div class="terminal-output">
+                    Cybersecurity Engineer | B.Tech CSE Student at Centurion University<br>
+                    Certified Ethical Hacker | Security Researcher | Bug Bounty Hunter
+                </div>
+                
+                <div style="margin-top: 1rem;"><span class="terminal-prompt">$</span> <span class="terminal-command">cat experience.txt</span></div>
+                <div class="terminal-output">
+                    > 2+ years in cybersecurity research<br>
+                    > Multiple successful penetration tests<br>
+                    > Identified critical vulnerabilities in enterprise systems<br>
+                    > Developed security protocols for web applications
+                </div>
+                
+                <div style="margin-top: 1rem;"><span class="terminal-prompt">$</span> <span class="terminal-command">./motivation.sh</span></div>
+                <div class="terminal-output">
+                    > Passionate about securing digital assets<br>
+                    > Believe in ethical hacking for stronger security<br>
+                    > Continuous learner in evolving threat landscape<br>
+                    > Committed to cybersecurity education
+                </div>
+                
+                <div style="margin-top: 1rem;"><span class="terminal-prompt">$</span> <span class="terminal-command">nmap --version</span><span class="terminal-cursor"></span></div>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="{{ url_for('about') }}" class="btn">View Full Profile</a>
+        </div>
+    </div>
+</section>
+
+<section class="section" style="background: linear-gradient(135deg, #050a0f, #0a0e12); border-top: 1px solid var(--cyber-green); border-bottom: 1px solid var(--cyber-green);">
+    <div class="container">
+        <h2 class="section-title">Technical Skills</h2>
+        <div class="skills-grid">
+            <div class="skill-card">
+                <div class="skill-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Network Security</h3>
+                <p>Firewalls, IDS/IPS, VPNs, SIEM</p>
+            </div>
+            <div class="skill-card">
+                <div class="skill-icon">
+                    <i class="fas fa-user-secret"></i>
+                </div>
+                <h3>Penetration Testing</h3>
+                <p>Kali Linux, Metasploit, Burp Suite</p>
+            </div>
+            <div class="skill-card">
+                <div class="skill-icon">
+                    <i class="fas fa-bug"></i>
+                </div>
+                <h3>Vulnerability Assessment</h3>
+                <p>Nessus, OpenVAS, OWASP ZAP</p>
+            </div>
+            <div class="skill-card">
+                <div class="skill-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h3>Cryptography</h3>
+                <p>SSL/TLS, AES, RSA, PKI</p>
+            </div>
+            <div class="skill-card">
+                <div class="skill-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <h3>Programming</h3>
+                <p>Python, Bash, C++, JavaScript</p>
+            </div>
+            <div class="skill-card">
+                <div class="skill-icon">
+                    <i class="fas fa-cloud"></i>
+                </div>
+                <h3>Cloud Security</h3>
+                <p>AWS, Azure, GCP Security</p>
+            </div>
+            <div class="skill-card">
+                <div class="skill-icon">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <h3>Web Security</h3>
+                <p>OWASP Top 10, XSS, SQLi, CSRF</p>
+            </div>
+            <div class="skill-card">
+                <div class="skill-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3>Mobile Security</h3>
+                <p>Android/iOS Pen Testing</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">Certifications</h2>
+        <div class="terminal">
+            <div class="terminal-header">
+                <div class="terminal-btn red"></div>
+                <div class="terminal-btn yellow"></div>
+                <div class="terminal-btn green"></div>
+                <div class="terminal-title">root@kali: ~/certs</div>
+            </div>
+            <div class="terminal-body">
+                <div><span class="terminal-prompt">$</span> <span class="terminal-command">ls -la certifications/</span></div>
+                <div class="terminal-output">
+                    > Certified Ethical Hacker (CEH)<br>
+                    > CompTIA Security+<br>
+                    > Offensive Security Certified Professional (OSCP)<br>
+                    > Cisco Certified CyberOps Associate<br>
+                    > eLearnSecurity Junior Penetration Tester (eJPT)
+                </div>
+                <div style="margin-top: 1rem;">
+                    <span class="terminal-prompt">$</span> <span class="terminal-command">./achievements.sh</span>
+                </div>
+                <div class="terminal-output">
+                    > Multiple CVEs discovered and reported<br>
+                    > Bug bounty awards from various programs<br>
+                    > Published security research papers<br>
+                    > Speaker at cybersecurity conferences
+                </div>
+                <div style="margin-top: 1rem;">
+                    <span class="terminal-prompt">$</span> <span class="terminal-command">cat current_learning.txt</span>
+                </div>
+                <div class="terminal-output">
+                    > Cloud Security (AWS/Azure)<br>
+                    > Advanced Penetration Testing<br>
+                    > Threat Intelligence Analysis<br>
+                    > Purple Teaming Techniques
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Create matrix background
+    document.addEventListener('DOMContentLoaded', function() {
+        // Matrix background
+        const matrixBg = document.getElementById('matrixBackground');
+        const chars = "9199706909";
+        const columns = Math.floor(window.innerWidth / 20);
+        
+        for (let i = 0; i < columns; i++) {
+            const column = document.createElement('div');
+            column.className = 'matrix-column';
+            column.style.animationDuration = `${5 + Math.random() * 10}s`;
+            column.style.animationDelay = `${Math.random() * 5}s`;
+            
+            // Create random characters
+            let content = '';
+            const rows = 20 + Math.floor(Math.random() * 10);
+            for (let j = 0; j < rows; j++) {
+                content += chars[Math.floor(Math.random() * chars.length)];
+            }
+            
+            column.textContent = content;
+            matrixBg.appendChild(column);
+        }
+        
+        // Terminal typing animation
+        const terminalOutputs = document.querySelectorAll('.terminal-output');
+        terminalOutputs.forEach((output, index) => {
+            const text = output.innerHTML;
+            output.innerHTML = '';
+            
+            let i = 0;
+            const typing = setInterval(() => {
+                if (i < text.length) {
+                    output.innerHTML += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typing);
+                    // Remove cursor after last command
+                    if (index === terminalOutputs.length - 1) {
+                        setTimeout(() => {
+                            const cursor = document.querySelector('.terminal-cursor');
+                            if (cursor) cursor.style.display = 'none';
+                        }, 1000);
+                    }
+                }
+            }, 20 + Math.random() * 20);
+        });
+        
+        // Skill card hover effect
+        const skillCards = document.querySelectorAll('.skill-card');
+        skillCards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+    });
+</script>
+{% endblock %}

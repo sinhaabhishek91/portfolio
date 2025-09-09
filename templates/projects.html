@@ -1,0 +1,334 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/projects.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    :root {
+        --cyber-blue: #0066cc;
+        --cyber-green: #00cc66;
+        --cyber-red: #ff3333;
+        --terminal-bg: #0a0e12;
+        --terminal-text: #00ff41;
+        --card-bg: #0a192f;
+        --text-light: #ccd6f6;
+    }
+    
+    .section {
+        padding: 6rem 0;
+        background-color: #0a192f;
+        color: var(--text-light);
+    }
+    
+    .section-title {
+        text-align: center;
+        margin-bottom: 3rem;
+        font-size: 2.5rem;
+        color: var(--cyber-green);
+        position: relative;
+    }
+    
+    .section-title::after {
+        content: '';
+        position: absolute;
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(to right, var(--cyber-green), var(--cyber-blue));
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 2px;
+    }
+    
+    .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+    }
+    
+    .project-card {
+        background: var(--card-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0, 204, 102, 0.1);
+        position: relative;
+    }
+    
+    .project-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(0, 204, 102, 0.1), rgba(0, 102, 204, 0.1));
+        z-index: 1;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .project-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 204, 102, 0.2);
+        border-color: var(--cyber-green);
+    }
+    
+    .project-card:hover::before {
+        opacity: 1;
+    }
+    
+    .project-img {
+        height: 250px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .project-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .project-card:hover .project-img img {
+        transform: scale(1.1);
+    }
+    
+    .project-content {
+        padding: 1.5rem;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .project-title {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        color: var(--cyber-green);
+    }
+    
+    .project-date {
+        color: #8892b0;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    
+    .project-description {
+        margin-bottom: 1.5rem;
+    }
+    
+    .project-description p {
+        margin-bottom: 1rem;
+        line-height: 1.6;
+    }
+    
+    .project-description ul {
+        padding-left: 1.2rem;
+        margin-bottom: 1rem;
+    }
+    
+    .project-description li {
+        margin-bottom: 0.5rem;
+        position: relative;
+    }
+    
+    .project-description li::before {
+        content: '▹';
+        position: absolute;
+        left: -1.2rem;
+        color: var(--cyber-green);
+    }
+    
+    .project-tech {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+        margin-top: 1.5rem;
+    }
+    
+    .tech-tag {
+        background: rgba(0, 204, 102, 0.1);
+        color: var(--cyber-green);
+        padding: 0.3rem 0.8rem;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        border: 1px solid var(--cyber-green);
+        transition: all 0.3s ease;
+    }
+    
+    .tech-tag:hover {
+        background: var(--cyber-green);
+        color: var(--terminal-bg);
+        transform: translateY(-2px);
+    }
+    
+    .project-links {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+    
+    .project-link {
+        color: var(--text-light);
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .project-link:hover {
+        color: var(--cyber-green);
+    }
+    
+    .project-link i {
+        font-size: 1rem;
+    }
+    
+    /* Terminal window effect for project cards */
+    .project-card:hover .project-title {
+        animation: terminalGlow 2s infinite alternate;
+    }
+    
+    @keyframes terminalGlow {
+        from {
+            text-shadow: 0 0 5px rgba(0, 204, 102, 0.5);
+        }
+        to {
+            text-shadow: 0 0 15px rgba(0, 204, 102, 0.8);
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .projects-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/projects.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animate project cards on scroll
+        const projectCards = document.querySelectorAll('.project-card');
+        
+        const animateOnScroll = function() {
+            projectCards.forEach((card, index) => {
+                const cardPosition = card.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight / 1.3;
+                
+                if (cardPosition < screenPosition) {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }
+            });
+        };
+        
+        // Set initial state
+        projectCards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'all 0.6s ease';
+        });
+        
+        window.addEventListener('scroll', animateOnScroll);
+        window.addEventListener('load', animateOnScroll);
+        
+        // Add click effect to tech tags
+        const techTags = document.querySelectorAll('.tech-tag');
+        techTags.forEach(tag => {
+            tag.addEventListener('click', function() {
+                this.style.transform = 'scale(0.9)';
+                setTimeout(() => {
+                    this.style.transform = 'translateY(-2px)';
+                }, 100);
+            });
+        });
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="section-title">My Cybersecurity Projects</h1>
+        
+        <div class="projects-grid">
+            <!-- Password Management Tool -->
+            <div class="project-card">
+                <div class="project-img">
+                    <img src="{{ url_for('static', filename='images/project_images/password-manager.jpg') }}" alt="Password Management Tool">
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title">Password Management Tool</h3>
+                    <p class="project-date">Jan - Apr 2025</p>
+                    <div class="project-description">
+                        <p>Developed a secure password management solution with advanced encryption and machine learning capabilities.</p>
+                        <ul>
+                            <li>Implemented AES-256 encryption for password storage</li>
+                            <li>Developed PBKDF2 hashing with 100,000 iterations</li>
+                            <li>Created Flask REST API endpoints for secure access</li>
+                            <li>Trained ML model to detect weak passwords (98% accuracy)</li>
+                            <li>Designed intuitive Bootstrap dashboard interface</li>
+                        </ul>
+                    </div>
+                    <div class="project-tech">
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">Flask</span>
+                        <span class="tech-tag">AES-256</span>
+                        <span class="tech-tag">Machine Learning</span>
+                        <span class="tech-tag">Bootstrap</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Live Demo</a>
+                        <a href="#" class="project-link"><i class="fab fa-github"></i> Source Code</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Cybersecurity Internship Projects -->
+            <div class="project-card">
+                <div class="project-img">
+                    <img src="{{ url_for('static', filename='images/project_images/cybersecurity.jpg') }}" alt="Cybersecurity Projects">
+                </div>
+                <div class="project-content">
+                    <h3 class="project-title">Cybersecurity Internship Projects</h3>
+                    <p class="project-date">June 2024</p>
+                    <div class="project-description">
+                        <p>Completed intensive cybersecurity training with Prodigy Infotech, developing 5 security tools:</p>
+                        <ul>
+                            <li><strong>Caesar Cipher Tool:</strong> Implemented ROT13 and custom shift ciphers with brute-force detection</li>
+                            <li><strong>Keylogger:</strong> Developed stealth monitoring tool with screenshot capture (ethical use only)</li>
+                            <li><strong>Image Encryption:</strong> Created XOR-based image scrambler with secure key exchange</li>
+                            <li><strong>Password Auditor:</strong> Built zxcvbn-based strength analyzer with policy enforcement</li>
+                            <li><strong>Network Monitor:</strong> Designed packet sniffer with anomaly detection capabilities</li>
+                        </ul>
+                    </div>
+                    <div class="project-tech">
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">Cryptography</span>
+                        <span class="tech-tag">Pygame</span>
+                        <span class="tech-tag">Scapy</span>
+                        <span class="tech-tag">Security</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Demo Videos</a>
+                        <a href="https://github.com/sinhaabhishek91/Internship-Cyber-Security.git" class="project-link"><i class="fab fa-github"></i> Code Samples</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,52 @@
+<footer style="background: #0a0e12; border-top: 1px solid #00ff41; padding: 2rem 0; color: #b3b3b3;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+        <ul class="social-links" style="list-style: none; padding: 0; display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <li>
+                <a href="https://github.com/sinhaabhishek91" target="_blank" 
+                   style="color: #00ff41; text-decoration: none; transition: all 0.3s ease;"
+                   onmouseover="this.style.textShadow='0 0 10px #00ff41'"
+                   onmouseout="this.style.textShadow='none'">
+                    GitHub
+                </a>
+            </li>
+            <li>
+                <a href="https://www.linkedin.com/in/abhishek-kumar-sinha-cybersecurity" target="_blank"
+                   style="color: #00ff41; text-decoration: none; transition: all 0.3s ease;"
+                   onmouseover="this.style.textShadow='0 0 10px #00ff41'"
+                   onmouseout="this.style.textShadow='none'">
+                    LinkedIn
+                </a>
+            </li>
+            <li>
+                <a href="mailto:sinhaabhishek356@gmail.com?subject=Contact%20from%20Portfolio&body=Hello%20Abhishek,"
+                   style="color: #00ff41; text-decoration: none; transition: all 0.3s ease;"
+                   onmouseover="this.style.textShadow='0 0 10px #00ff41'"
+                   onmouseout="this.style.textShadow='none'">
+                    Email
+                </a>
+            </li>
+        </ul>
+        <p style="text-align: center; margin: 0; font-size: 0.9rem;">
+            &copy; <span id="current-year">2024</span> Abhishek Kumar Sinha. All rights reserved.
+        </p>
+    </div>
+</footer>
+
+<script>
+    // Update copyright year automatically
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+    
+    // Fallback for mailto links
+    document.querySelectorAll('a[href^="mailto:"]').forEach(link => {
+        link.addEventListener('click', function(e) {
+            // Try standard method first
+            try {
+                window.location.href = this.href;
+            } catch (err) {
+                // Fallback for browsers that block mailto
+                window.open(this.href, '_blank');
+            }
+            e.preventDefault();
+        });
+    });
+</script>
