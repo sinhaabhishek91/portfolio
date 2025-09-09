@@ -1,2 +1,2 @@
-Flask==2.0.1
+pip install Flask==3.0.3
 python-dotenv==0.19.0
